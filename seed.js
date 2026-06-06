@@ -8,34 +8,32 @@ const Observation = require('./src/models/Observation');
 const seed = async () => {
   await connectDB();
 
-  // Nettoyer la base
   await Device.deleteMany({});
   await Measurement.deleteMany({});
   await Observation.deleteMany({});
   console.log('Base nettoyée');
 
-  // Créer un device
   const device = await Device.create({
     name: 'Téléphone Chris',
     location: 'McDo Berri'
   });
   console.log('Device créé — apiKey:', device.apiKey);
 
-  // Créer des mesures sur 24h
   const now = new Date();
   const measurements = [];
   for (let i = 0; i < 48; i++) {
-    const timestamp = new Date(now - i * 30 * 60 * 1000); // toutes les 30 min
+    const timestamp = new Date(now - i * 30 * 60 * 1000);
     const hour = timestamp.getHours();
-    // Plus calme la nuit, plus bruyant le midi
-    let baseValue = 45;
-    if (hour >= 11 && hour <= 14) baseValue = 75;
-    else if (hour >= 17 && hour <= 20) baseValue = 70;
-    else if (hour >= 7 && hour <= 10) baseValue = 60;
+
+    // Valeurs négatives comme Phyphox
+    let baseValue = -45;
+    if (hour >= 11 && hour <= 14) baseValue = -20; // midi bruyant
+    else if (hour >= 17 && hour <= 20) baseValue = -25; // soir animé
+    else if (hour >= 7 && hour <= 10) baseValue = -35; // matin modéré
 
     measurements.push({
       type: 'audio',
-      value: baseValue + Math.random() * 10 - 5,
+      value: baseValue + Math.random() * 6 - 3,
       location: 'McDo Berri',
       timestamp,
       deviceId: device._id
@@ -44,7 +42,6 @@ const seed = async () => {
   await Measurement.insertMany(measurements);
   console.log('48 mesures créées');
 
-  // Créer des observations
   const vibes = ['calm', 'moderate', 'busy', 'chaotic'];
   const proximities = ['low', 'medium', 'high'];
   const observations = [];
