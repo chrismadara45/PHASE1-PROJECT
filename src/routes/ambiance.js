@@ -51,9 +51,9 @@ router.get('/:location/quiet-hours', async (req, res) => {
     const quietHours = Object.entries(hourlyAvg)
       .map(([hour, data]) => ({
         hour: parseInt(hour),
-        avgDecibels: Math.round(data.total / data.count)
+        avgDecibels: parseFloat((data.total / data.count).toFixed(2))
       }))
-      .filter(h => h.avgDecibels < 60)
+      .filter(h => h.avgDecibels < -35)
       .sort((a, b) => a.avgDecibels - b.avgDecibels);
 
     res.json({ location, quietHours });
@@ -66,7 +66,7 @@ router.get('/:location/quiet-hours', async (req, res) => {
 router.get('/:location/current', async (req, res) => {
   try {
     const { location } = req.params;
-    const since = new Date(Date.now() - 30 * 60 * 1000); // 30 dernières minutes
+    const since = new Date(Date.now() - 30 * 60 * 1000);
 
     const measurements = await Measurement.find({
       location,
@@ -79,14 +79,14 @@ router.get('/:location/current', async (req, res) => {
     }).sort({ timestamp: -1 }).limit(1);
 
     const avgDecibels = measurements.length
-      ? Math.round(measurements.reduce((sum, m) => sum + m.value, 0) / measurements.length)
+      ? parseFloat((measurements.reduce((sum, m) => sum + m.value, 0) / measurements.length).toFixed(2))
       : null;
 
     let noiseLevel = 'unknown';
     if (avgDecibels !== null) {
-      if (avgDecibels < 50) noiseLevel = 'calme';
-      else if (avgDecibels < 65) noiseLevel = 'modéré';
-      else if (avgDecibels < 80) noiseLevel = 'animé';
+      if (avgDecibels < -40) noiseLevel = 'calme';
+      else if (avgDecibels < -30) noiseLevel = 'modéré';
+      else if (avgDecibels < -20) noiseLevel = 'animé';
       else noiseLevel = 'bruyant';
     }
 
