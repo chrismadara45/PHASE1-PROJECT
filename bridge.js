@@ -1,9 +1,10 @@
 require('dotenv').config();
 const http = require('http');
+const mongoose = require('mongoose');
+const Device = require('./src/models/Device');
 
-const PHYPHOX_URL = 'http://192.168.0.102';
+const PHYPHOX_URL = `http://${process.env.PHYPHOX_IP}`;
 const SERVER_URL = 'http://localhost:3000';
-const API_KEY = 'c1279d7b764bd1104737cef5adbbf87d1d1af246cc0c9929dc489deedfb6573e';
 const LOCATION = 'McDo Berri';
 const INTERVAL_MS = 5000;
 
@@ -25,7 +26,7 @@ const fetchPhyphox = () => {
   });
 };
 
-const sendMeasurement = (value) => {
+const sendMeasurement = (value, apiKey) => {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       type: 'audio',
@@ -41,7 +42,7 @@ const sendMeasurement = (value) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
+        'x-api-key': apiKey,
         'Content-Length': Buffer.byteLength(body)
       }
     };
@@ -57,7 +58,14 @@ const sendMeasurement = (value) => {
 };
 
 const run = async () => {
-  console.log('Bridge démarré — collecte toutes les 5 secondes');
+  await mongoose.connect(process.env.MONGODB_URI);
+  const device = await Device.findOne({ location: LOCATION });
+  if (!device) {
+    console.error(`Aucun device trouvé pour le lieu "${LOCATION}"`);
+    process.exit(1);
+  }
+
+  console.log(`Bridge démarré — device: ${device.name}`);
   console.log(`Phyphox: ${PHYPHOX_URL}`);
   console.log(`Serveur: ${SERVER_URL}`);
   console.log(`Lieu: ${LOCATION}`);
@@ -66,7 +74,7 @@ const run = async () => {
     try {
       const value = await fetchPhyphox();
       if (value !== undefined && value !== null) {
-        await sendMeasurement(value);
+        await sendMeasurement(value, device.apiKey);
         console.log(`[${new Date().toISOString()}] Envoyé: ${value.toFixed(2)} dB`);
       } else {
         console.log('Valeur nulle reçue de Phyphox');
@@ -77,4 +85,7 @@ const run = async () => {
   }, INTERVAL_MS);
 };
 
-run();
+run().catch(err => {
+  console.error('Erreur:', err.message);
+  process.exit(1);
+});

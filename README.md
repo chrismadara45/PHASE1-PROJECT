@@ -26,7 +26,7 @@ cp .env.example .env
 # 4. Lancer le serveur
 node index.js
 
-# 5. (Optionnel) Peupler la base avec des données de démo
+# 5.  Peupler la base avec des données de démo
 node seed.js
 ```
 
