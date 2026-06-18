@@ -62,11 +62,12 @@ router.get('/:location/quiet-hours', async (req, res) => {
   }
 });
 
-// GET /ambiance/:location/current
+// GET /ambiance/:location/current?window=30
 router.get('/:location/current', async (req, res) => {
   try {
     const { location } = req.params;
-    const since = new Date(Date.now() - 30 * 60 * 1000);
+    const minutes = parseInt(req.query.window) || 30;
+    const since = new Date(Date.now() - minutes * 60 * 1000);
 
     const measurements = await Measurement.find({
       location,
