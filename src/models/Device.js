@@ -12,6 +12,14 @@ const deviceSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  latitude: {
+    type: Number,
+    default: null
+  },
+  longitude: {
+    type: Number,
+    default: null
+  },
   apiKey: {
     type: String,
     default: () => crypto.randomBytes(32).toString('hex')

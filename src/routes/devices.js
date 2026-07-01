@@ -5,11 +5,11 @@ const Device = require('../models/Device');
 // POST /devices - Enregistrer un nouveau device
 router.post('/', async (req, res) => {
   try {
-    const { name, location } = req.body;
+    const { name, location, latitude, longitude } = req.body;
     if (!name || !location) {
       return res.status(400).json({ error: 'name et location sont requis' });
     }
-    const device = new Device({ name, location });
+    const device = new Device({ name, location, latitude, longitude });
     await device.save();
     res.status(201).json({ id: device._id, apiKey: device.apiKey });
   } catch (err) {

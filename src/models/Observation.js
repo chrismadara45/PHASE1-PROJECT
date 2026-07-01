@@ -13,11 +13,15 @@ const observationSchema = new mongoose.Schema({
   vibe: {
     type: String,
     required: true,
-    enum: ['calm', 'moderate', 'busy', 'chaotic']
+    enum: ['calm', 'moderate', 'busy', 'insanely busy']
   },
   notes: {
     type: String,
     default: ''
+  },
+  auteur: {
+    type: String,
+    default: 'anonyme'
   },
   timestamp: {
     type: Date,
