@@ -5,6 +5,11 @@ const observationSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  author: {
+    type: mongoose.Schema.Types.ObjectId, // Le type est un ID unique d'objet MongoDB
+    ref: 'User',                           
+    required: true                        
+  },
   proximity: {
     type: String,
     required: true,

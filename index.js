@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./src/config/db');
+const authRouter = require('./src/routes/auth');
 const devicesRouter = require('./src/routes/devices');
 const measurementsRouter = require('./src/routes/measurements');
 const observationsRouter = require('./src/routes/observations');
@@ -13,6 +14,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.json({ message: 'Serveur IFT3225 en ligne ' });
 });
+
+// BRANCHEMENT : On déclare que toutes les requêtes commençant par "/auth" 
+// (comme /auth/register ou /auth/login) basculent vers notre routeur d'authentification
+app.use('/auth', authRouter);
 
 app.use('/devices', devicesRouter);
 app.use('/measurements', measurementsRouter);

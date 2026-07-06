@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Observation = require('../models/Observation');
-const auth = require('../middlewares/auth');
+const authUser = require('../middlewares/authUser');
 
 // POST /observations - Ajouter une observation
 router.post('/', auth, async (req, res) => {
@@ -14,7 +14,8 @@ router.post('/', auth, async (req, res) => {
       location,
       proximity,
       vibe,
-      notes
+      notes,
+      author:req.user._id
     });
     await observation.save();
     res.status(201).json(observation);
@@ -28,7 +29,10 @@ router.get('/', async (req, res) => {
   try {
     const { location } = req.query;
     const filter = location ? { location } : {};
-    const observations = await Observation.find(filter).sort({ timestamp: -1 }).limit(100);
+    const observations = await Observation.find(filter)
+    .populate('author', 'username') 
+    .sort({ timestamp: -1 })
+    .limit(100);
     res.status(200).json(observations);
   } catch (err) {
     res.status(500).json({ error: err.message });
