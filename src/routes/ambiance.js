@@ -82,12 +82,20 @@ router.get('/:location/current', async (req, res) => {
     const avgDecibels = measurements.length
       ? parseFloat((measurements.reduce((sum, m) => sum + m.value, 0) / measurements.length).toFixed(2))
       : null;
+      // 1. On définit notre dictionnaire d'échelles proprement
+    const classificationScales = {
+      calme: { max: -40, description: "Silencieux, idéal pour étudier" },
+      modere: { min: -40, max: -30, description: "Bruit de fond léger, conversation normale" },
+      anime: { min: -30, max: -20, description: "Brouhaha constant, assez vivant" },
+      bruyant: { min: -20, description: "Très fort, difficile de s'entendre" }
+    };
 
     let noiseLevel = 'unknown';
+    // On utilise les échelles pour déterminer le niveau actuel
     if (avgDecibels !== null) {
-      if (avgDecibels < -40) noiseLevel = 'calme';
-      else if (avgDecibels < -30) noiseLevel = 'modéré';
-      else if (avgDecibels < -20) noiseLevel = 'animé';
+      if (avgDecibels < classificationScales.calme.max) noiseLevel = 'calme';
+      else if (avgDecibels < classificationScales.modere.max) noiseLevel = 'modere';
+      else if (avgDecibels < classificationScales.anime.max) noiseLevel = 'anime';
       else noiseLevel = 'bruyant';
     }
 
@@ -95,6 +103,7 @@ router.get('/:location/current', async (req, res) => {
       location,
       avgDecibels,
       noiseLevel,
+      scales: classificationScales,
       vibe: observations[0]?.vibe || 'unknown',
       proximity: observations[0]?.proximity || 'unknown',
       basedOn: {

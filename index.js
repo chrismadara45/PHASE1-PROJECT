@@ -6,6 +6,7 @@ const devicesRouter = require('./src/routes/devices');
 const measurementsRouter = require('./src/routes/measurements');
 const observationsRouter = require('./src/routes/observations');
 const ambianceRouter = require('./src/routes/ambiance');
+const locationsRouter = require('./src/routes/locations');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/devices', devicesRouter);
 app.use('/measurements', measurementsRouter);
 app.use('/observations', observationsRouter);
 app.use('/ambiance', ambianceRouter);
+app.use('/locations', locationsRouter);
 
 const PORT = process.env.PORT || 3000;
 
