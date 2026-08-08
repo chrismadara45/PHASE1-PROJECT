@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Observation = require('../models/Observation');
 const authUser = require('../middlewares/authUser');
+const auth = require('../middlewares/authUser');
 
 // POST /observations - Ajouter une observation
 router.post('/', auth, async (req, res) => {

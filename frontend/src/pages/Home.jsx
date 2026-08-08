@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import L from 'leaflet';
-import apiClient from '../api/client';
+import apiClient from '../api/client.js';
 
 // ATTENTION : Ligne indispensable pour que la carte Leaflet s'affiche correctement !
 import 'leaflet/dist/leaflet.css';

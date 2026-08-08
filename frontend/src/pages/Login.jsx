@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../api/client';
-import useAuth from '../hooks/useAuth';
+import apiClient from '../api/client.js';
+import useAuth from '../hooks/useAuth.js';
 
 const Login = () => {
   // --- GESTION DES ÉTATS (STATES) ---
