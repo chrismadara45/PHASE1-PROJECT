@@ -84,7 +84,7 @@ const Home = () => {
           {locationsData.map((loc) => (
             <Marker 
               key={loc._id} 
-              position={[loc.coordinates.lat, loc.coordinates.lng]}
+              position={[loc.coordinates.lat, loc.coordinates.long]}
               icon={createCustomIcon(loc.ambiance.noiseLevel)}
             >
               <Popup>

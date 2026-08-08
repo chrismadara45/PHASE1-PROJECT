@@ -29,9 +29,9 @@ const seed = async () => {
 
   //création de 3 lieux geographique(on atttribut des coordonnées de MTL spot)
   const locationsData = [
-    { name: 'McDo Berri', coordinates: { lat: 45.5155, lng: -73.5615 } },
-    { name: 'Bibliothèque Centrale', coordinates: { lat: 45.5152, lng: -73.5624 } },
-    { name: 'Café Campus', coordinates: { lat: 45.5118, lng: -73.5744 } }
+    { name: 'McDo Berri', coordinates: { lat: 45.5155, long: -73.5615 } },
+    { name: 'Bibliothèque Centrale', coordinates: { lat: 45.5152, long: -73.5624 } },
+    { name: 'Café Campus', coordinates: { lat: 45.5118, long: -73.5744 } }
   ];
 
   //on insere 3 lieux dans la base

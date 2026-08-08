@@ -14,17 +14,14 @@ const userSchema = new mongoose.Schema({
     }
 },{ timestamps: true }); // genere automatiquement date de creation et de modif
 
-//Hacher le mot de passe avant de le sauvergarder 
-userSchema.pre('save', async function(next){
-    if(!this.isModified('password')) return next();
-    try{
-        const salt = await bcrypt.genSalt(10); // on genere une 'clé sale' de puissance 10
+//Hacher le mot de passe avant de le sauvegarder 
+userSchema.pre('save', async function() {
+    // Si le mot de passe n'a pas été modifié, on arrête la fonction ici
+    if (!this.isModified('password')) return;
     
-        this.password= await bcrypt.hash(this.password, salt); // password calir -> haché
-        next();
-    }catch(err){
-        next(err); // on passe au middleware suivant pour lock le save
-    }
+    // On génère le sel et on hache, pas besoin de next() !
+    const salt = await bcrypt.genSalt(10); 
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods.comparePassword = async function(candidatePassword){
